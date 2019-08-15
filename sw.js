@@ -2852,6 +2852,7 @@ function updateState() {
 }
 
 self.addEventListener("fetch", function (event) {
+  // TODO: need to properly handle the page request here so I can make this into a PWA
   return;
   console.log("asdf");
   var url = new URL(event.request.url);
