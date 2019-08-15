@@ -971,6 +971,8 @@ function (_Component) {
 console.log("asdfasdfasdfad");
 var container = document.getElementById("container");
 container ? react_dom_default.a.render(react_default.a.createElement(display_Display, null), container) : false;
+console.log(navigator.serviceWorker);
+console.log(navigator);
 
 if ('serviceWorker' in navigator) {
   console.log("serviceworkers is a go!");
