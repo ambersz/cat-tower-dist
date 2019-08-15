@@ -2789,7 +2789,7 @@ function changeRate(t) {
     });
     p.then(function () {
       if (t > 0) {
-        rate *= 1.5;
+        rate *= 1.03;
       } else {
         rate *= 0.5;
       }
