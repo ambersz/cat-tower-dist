@@ -2666,10 +2666,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
 
-self.addEventListener('install', function (event) {
-  console.log('V1 installing…');
-  self.skipWaiting();
-});
+var state = {};
 var port2;
 var KEY_INIT = 'HAS_BEEN_INITIALIZED',
     // bool
@@ -2682,6 +2679,34 @@ KEY_UPDATED = 'LAST_UPDATED',
 KEY_RATE = 'INCREASE_RATE',
     // number
 KEY_GOAL = 'TODAYS_GOAL'; // number
+
+var service_worker_keys = [KEY_INIT, KEY_MAX, KEY_CURRENT, KEY_UPDATED, KEY_RATE, KEY_GOAL];
+self.addEventListener('install', function (event) {
+  console.log('V1 installing…');
+  getStateFromDB().then(function () {
+    self.skipWaiting();
+  }); // load state from IndexedDB for fast operations in serviceWorker
+});
+
+function getStateFromDB() {
+  return Promise.all([get(KEY_INIT).then(function (val) {
+    return state.init = val;
+  }), get(KEY_MAX).then(function (val) {
+    return state.max = val;
+  }), get(KEY_CURRENT).then(function (val) {
+    return state.current = val;
+  }), get(KEY_UPDATED).then(function (val) {
+    return state.updated = val;
+  }), get(KEY_RATE).then(function (val) {
+    return state.rate = val;
+  }), get(KEY_GOAL).then(function (val) {
+    return state.goal = val;
+  })]);
+}
+
+function setDbFromState() {
+  return Promise.all([set(KEY_INIT, state.init), set(KEY_MAX, state.max), set(KEY_CURRENT, state.current), set(KEY_UPDATED, state.updated), set(KEY_RATE, state.rate), set(KEY_GOAL, state.goal)]);
+}
 
 self.addEventListener('message', function (e) {
   if (_typeof(e.data) === 'object') {
@@ -2700,34 +2725,26 @@ self.addEventListener('message', function (e) {
     console.log('setting up');
     port2 = e.ports[0]; // if db hasn't been initialized before, init  with the following default values
 
-    get(KEY_INIT).then(function (val) {
-      if (val !== true) {
-        Promise.all([set(KEY_INIT, true), set(KEY_MAX, 0), set(KEY_CURRENT, 0), // set(KEY_UPDATED, new Date()),
-        set(KEY_RATE, 0.1), set(KEY_GOAL, 1)]).then(updateState);
-      } else {
-        updateState();
-      }
-    });
-  } else if (e.data === 'set') {
-    set('data', 'hello world data').then(function (e) {
-      console.log(e);
-    })["catch"](function () {
-      console.log('set data failed');
-    });
-  } else if (e.data === 'get') {
-    var p = port2 || e.ports[0];
-    get('data').then(function (val) {
-      console.log(val);
-      console.log(_typeof(val));
-      p && p.postMessage(val);
-    });
+    if (state.init !== true) {
+      state = {
+        init: true,
+        max: 1,
+        current: 0,
+        updated: new Date(),
+        rate: 0.1,
+        goal: 1
+      };
+    }
+
+    updateState();
   }
 });
 
 function route(action) {
   switch (action.type) {
     case constants["a" /* default */].INCREMENT:
-      increment(action.delta).then(updateState);
+      state.updated = new Date();
+      state.current += action.delta;
       break;
 
     case constants["a" /* default */].REPORT:
@@ -2740,12 +2757,15 @@ function route(action) {
 
         case 0:
           // not sore, success! update max, increase rate, run reset
-          Promise.all([updateMax(), changeRate(1)]).then(service_worker_reset);
+          updateMax();
+          changeRate(1);
+          service_worker_reset();
           break;
 
         case 1:
           // sore, sad :( decrease rate, run reset
-          changeRate(-1).then(service_worker_reset);
+          changeRate(-1);
+          service_worker_reset();
       }
 
       break;
@@ -2754,85 +2774,35 @@ function route(action) {
       console.log("I just cleared the whole db");
       clear();
   }
-}
 
-function increment(delta) {
-  // increment current pushups by amount, update last updated date
-  return new Promise(function (resolve, reject) {
-    get(KEY_CURRENT).then(function (prev) {
-      var current = prev + delta;
-      Promise.all([set(KEY_CURRENT, current), set(KEY_UPDATED, new Date())]).then(function () {
-        return resolve(current);
-      })["catch"](function (err) {
-        return reject(err);
-      });
-    });
-  });
+  updateState();
 }
 
 function updateMax() {
-  return new Promise(function (resolve, reject) {
-    get(KEY_CURRENT).then(function (val) {
-      // TODO: Check that the current value is actually greater than the max before setting. Otherwise do nothing
-      set(KEY_MAX, val).then(function () {
-        return resolve(val);
-      })["catch"](function (err) {
-        return reject(err);
-      });
-    })["catch"](function (err) {
-      return reject(err);
-    });
-  });
+  // TODO: Check that the current value is actually greater than the max before setting. Otherwise do nothing
+  state.max = state.current;
 }
 
 function changeRate(t) {
-  return new Promise(function (resolve, reject) {
-    var rate;
-    var p = get(KEY_RATE).then(function (val) {
-      return rate = val;
-    });
-    p.then(function () {
-      if (t > 0) {
-        rate *= 1.03;
-      } else {
-        rate *= 0.5;
-      }
-
-      set(KEY_RATE, rate).then(function () {
-        return resolve(rate);
-      });
-    })["catch"](function (err) {
-      return reject(err);
-    });
-  });
+  if (t > 0) {
+    state.rate *= 1.03;
+  } else {
+    state.rate *= 0.5;
+  }
 }
 
 function service_worker_reset() {
-  // reset current, update last updated, generate goal, update state
-  set(KEY_UPDATED, new Date()).then(function () {
-    generateGoal().then(function (newGoal) {
-      Promise.all([set(KEY_GOAL, newGoal), set(KEY_CURRENT, 0)]).then(updateState);
-    });
-  });
-} // returns promise that resolves to a goal
-
+  // reset current, update last updated, generate goal
+  state.current = 0;
+  state.updated = new Date();
+  state.goal = generateGoal();
+}
 
 function generateGoal() {
-  // get max and rate, return goal of current max plus random variable from poisson distribution
-  return new Promise(function (resolve, reject) {
-    var max, rate;
-    return Promise.all([get(KEY_MAX).then(function (val) {
-      return max = val;
-    }), get(KEY_RATE).then(function (val) {
-      return rate = val;
-    })]).then(function () {
-      // TODO: if we failed yesterday's batch and it was more than 1 greater than our current max, 
-      // don't suggest a goal greater than or equal to that immediately
-      resolve(max + random_default.a.poisson(max * rate)());
-    })["catch"](function (err) {
-      return reject(err);
-    });
-  });
+  // return goal of current max plus random variable from poisson distribution
+  // TODO: if we failed yesterday's batch and it was more than 1 greater than our current max, 
+  // don't suggest a goal greater than or equal to that immediately
+  return max + random_default.a.poisson(max * rate)();
 }
 
 function updateState() {
@@ -2841,18 +2811,11 @@ function updateState() {
     return;
   }
 
-  var state = {};
-  Promise.all([get(KEY_CURRENT).then(function (val) {
-    return state.current = val;
-  }), get(KEY_GOAL).then(function (val) {
-    return state.goal = val;
-  }), get(KEY_UPDATED).then(function (val) {
-    return state.updated = val;
-  })]).then(function () {
-    console.log("I'm sending the state to the client!");
-    console.log(state);
-    port2.postMessage(state);
-  });
+  console.log("I'm sending the state to the client!");
+  console.log(state);
+  port2.postMessage(state); // Now that client gets the important information, we can take our time updating the IndexedDB state
+
+  setDbFromState();
 }
 
 self.addEventListener("fetch", function (event) {
@@ -2878,7 +2841,7 @@ self.addEventListener("fetch", function (event) {
     getting info:
     1: on setup and when day changes, check whether need to request report on soreness, generate goal if needed
     (has a new day started, and have there been any pushups recorded the previous day)
-    2: get current/goal pushups 
+    2: get current/goal pushups
     ---
     need to check if new day to reset counter. should not be able to increment pushups until soreness reported
     (can check new day on client side?)
