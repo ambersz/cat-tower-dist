@@ -2772,7 +2772,8 @@ function route(action) {
 
     case constants["a" /* default */].CLEAR:
       console.log("I just cleared the whole db");
-      clear();
+      state = {};
+    // clear();
   }
 
   updateState();
@@ -2795,14 +2796,14 @@ function service_worker_reset() {
   // reset current, update last updated, generate goal
   state.current = 0;
   state.updated = new Date();
-  state.goal = generateGoal();
+  state.goal = generateGoal(state.max, state.rate);
 }
 
-function generateGoal() {
+function generateGoal(max, rate) {
   // return goal of current max plus random variable from poisson distribution
   // TODO: if we failed yesterday's batch and it was more than 1 greater than our current max, 
   // don't suggest a goal greater than or equal to that immediately
-  return max + random_default.a.poisson(max * rate)();
+  return max + random_default.a.poisson(1 + max * rate)();
 }
 
 function updateState() {
