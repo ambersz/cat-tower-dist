@@ -968,7 +968,8 @@ function (_Component) {
 
 
 
-console.log("asdfasdfasdfad");
+console.log("asdfasdfasdfad"); // change something to force pages update...
+
 console.log(navigator.serviceWorker);
 console.log(navigator);
 
