@@ -2748,7 +2748,8 @@ function route(action) {
       break;
 
     case constants["a" /* default */].REPORT:
-      // update max, update rate, reset current, update last updated date, generate goal
+      var eg = expectedGoal(state.max, state.rate); // update max, update rate, reset current, update last updated date, generate goal
+
       switch (action.status) {
         case -1:
           // can't make judgement, run reset
@@ -2757,14 +2758,23 @@ function route(action) {
 
         case 0:
           // not sore, success! update max, increase rate, run reset
+          // do you have a success but have not gone beyond your expected goal? shouldn't increase the rate
           updateMax();
-          changeRate(1);
+
+          if (state.current > eg) {
+            changeRate(1);
+          }
+
           service_worker_reset();
           break;
 
         case 1:
           // sore, sad :( decrease rate, run reset
-          changeRate(-1);
+          // do you have a failure because you went beyond the expectations of your rate? shouldn't decrease the rate
+          if (state.current < eg) {
+            changeRate(-1);
+          }
+
           service_worker_reset();
       }
 
@@ -2780,12 +2790,14 @@ function route(action) {
 }
 
 function updateMax() {
-  // TODO: Check that the current value is actually greater than the max before setting. Otherwise do nothing
-  state.max = state.current;
+  if (state.current > state.max) {
+    state.max = state.current;
+  }
 }
 
 function changeRate(t) {
   if (t > 0) {
+    // use geometric mean of the rate that you expect to 
     state.rate *= 1.03;
   } else {
     state.rate *= 0.5;
@@ -2804,6 +2816,12 @@ function generateGoal(max, rate) {
   // TODO: if we failed yesterday's batch and it was more than 1 greater than our current max, 
   // don't suggest a goal greater than or equal to that immediately
   return max + random_default.a.poisson(1 + max * rate)();
+}
+
+function expectedGoal(max, rate) {
+  var eg = max + 1 + max * rate;
+  console.log('expected goal ' + eg);
+  return max + 1 + max * rate;
 }
 
 function updateState() {

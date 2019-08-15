@@ -1075,13 +1075,19 @@ function (_Component) {
     });
 
     Record_defineProperty(Record_assertThisInitialized(_this), "pushUpdate", function (e) {
-      e.preventDefault();
+      e && e.preventDefault();
       _this.props.update && _this.props.update(parseInt(_this.state.count));
       console.log('pushing update and resetting state');
 
       _this.setState({
         count: defaultCount
       });
+    });
+
+    Record_defineProperty(Record_assertThisInitialized(_this), "handleEnter", function (e) {
+      if (e.key === 'Enter') {
+        _this.pushUpdate();
+      }
     });
 
     _this.state = {
@@ -1099,7 +1105,8 @@ function (_Component) {
         type: "number",
         name: "count",
         value: this.state.count,
-        onChange: this.updateCount
+        onChange: this.updateCount,
+        onKeyPress: this.handleEnter
       }), react_default.a.createElement("button", {
         onClick: this.pushUpdate
       }, "Record Count"));
