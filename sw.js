@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -106,9 +106,9 @@
 
 
 const symbols = __webpack_require__(6)
-const number = __webpack_require__(16)
-const string = __webpack_require__(17)
-const object = __webpack_require__(18)
+const number = __webpack_require__(20)
+const string = __webpack_require__(21)
+const object = __webpack_require__(22)
 
 const typePredicates = {
   number,
@@ -342,7 +342,7 @@ exports.default = RNG;
 "use strict";
 
 
-module.exports = __webpack_require__(15).default
+module.exports = __webpack_require__(19).default
 
 
 /***/ }),
@@ -350,7 +350,11 @@ module.exports = __webpack_require__(15).default
 /* 12 */,
 /* 13 */,
 /* 14 */,
-/* 15 */
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -371,59 +375,59 @@ var _rng = __webpack_require__(7);
 
 var _rng2 = _interopRequireDefault(_rng);
 
-var _rngFactory = __webpack_require__(19);
+var _rngFactory = __webpack_require__(23);
 
 var _rngFactory2 = _interopRequireDefault(_rngFactory);
 
-var _uniform2 = __webpack_require__(30);
+var _uniform2 = __webpack_require__(34);
 
 var _uniform3 = _interopRequireDefault(_uniform2);
 
-var _uniformInt2 = __webpack_require__(31);
+var _uniformInt2 = __webpack_require__(35);
 
 var _uniformInt3 = _interopRequireDefault(_uniformInt2);
 
-var _uniformBoolean2 = __webpack_require__(32);
+var _uniformBoolean2 = __webpack_require__(36);
 
 var _uniformBoolean3 = _interopRequireDefault(_uniformBoolean2);
 
-var _normal2 = __webpack_require__(33);
+var _normal2 = __webpack_require__(37);
 
 var _normal3 = _interopRequireDefault(_normal2);
 
-var _logNormal2 = __webpack_require__(34);
+var _logNormal2 = __webpack_require__(38);
 
 var _logNormal3 = _interopRequireDefault(_logNormal2);
 
-var _bernoulli2 = __webpack_require__(35);
+var _bernoulli2 = __webpack_require__(39);
 
 var _bernoulli3 = _interopRequireDefault(_bernoulli2);
 
-var _binomial2 = __webpack_require__(36);
+var _binomial2 = __webpack_require__(40);
 
 var _binomial3 = _interopRequireDefault(_binomial2);
 
-var _geometric2 = __webpack_require__(37);
+var _geometric2 = __webpack_require__(41);
 
 var _geometric3 = _interopRequireDefault(_geometric2);
 
-var _poisson2 = __webpack_require__(38);
+var _poisson2 = __webpack_require__(42);
 
 var _poisson3 = _interopRequireDefault(_poisson2);
 
-var _exponential2 = __webpack_require__(39);
+var _exponential2 = __webpack_require__(43);
 
 var _exponential3 = _interopRequireDefault(_exponential2);
 
-var _irwinHall2 = __webpack_require__(40);
+var _irwinHall2 = __webpack_require__(44);
 
 var _irwinHall3 = _interopRequireDefault(_irwinHall2);
 
-var _bates2 = __webpack_require__(41);
+var _bates2 = __webpack_require__(45);
 
 var _bates3 = _interopRequireDefault(_bates2);
 
-var _pareto2 = __webpack_require__(42);
+var _pareto2 = __webpack_require__(46);
 
 var _pareto3 = _interopRequireDefault(_pareto2);
 
@@ -885,7 +889,7 @@ exports.default = new Random();
 //# sourceMappingURL=random.js.map
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -918,7 +922,7 @@ module.exports = {
 
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -951,7 +955,7 @@ module.exports = {
 
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -984,7 +988,7 @@ module.exports = {
 
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -996,7 +1000,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _seedrandom = __webpack_require__(20);
+var _seedrandom = __webpack_require__(24);
 
 var _seedrandom2 = _interopRequireDefault(_seedrandom);
 
@@ -1004,7 +1008,7 @@ var _rng = __webpack_require__(7);
 
 var _rng2 = _interopRequireDefault(_rng);
 
-var _function = __webpack_require__(29);
+var _function = __webpack_require__(33);
 
 var _function2 = _interopRequireDefault(_function);
 
@@ -1042,7 +1046,7 @@ exports.default = function () {
 //# sourceMappingURL=rng-factory.js.map
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // A library of seedable RNGs implemented in Javascript.
@@ -1057,17 +1061,17 @@ exports.default = function () {
 // alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
 // Period: ~2^116
 // Reported to pass all BigCrush tests.
-var alea = __webpack_require__(21);
+var alea = __webpack_require__(25);
 
 // xor128, a pure xor-shift generator by George Marsaglia.
 // Period: 2^128-1.
 // Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(22);
+var xor128 = __webpack_require__(26);
 
 // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
 // Period: 2^192-2^32
 // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(23);
+var xorwow = __webpack_require__(27);
 
 // xorshift7, by François Panneton and Pierre L'ecuyer, takes
 // a different approach: it adds robustness by allowing more shifts
@@ -1075,7 +1079,7 @@ var xorwow = __webpack_require__(23);
 // with 256 bits, that passes BigCrush with no systmatic failures.
 // Period 2^256-1.
 // No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(24);
+var xorshift7 = __webpack_require__(28);
 
 // xor4096, by Richard Brent, is a 4096-bit xor-shift with a
 // very long period that also adds a Weyl generator. It also passes
@@ -1084,18 +1088,18 @@ var xorshift7 = __webpack_require__(24);
 // collisions.
 // Period: 2^4128-2^32.
 // No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(25);
+var xor4096 = __webpack_require__(29);
 
 // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
 // number generator derived from ChaCha, a modern stream cipher.
 // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
 // Period: ~2^127
 // No systematic BigCrush failures reported.
-var tychei = __webpack_require__(26);
+var tychei = __webpack_require__(30);
 
 // The original ARC4-based prng included in this library.
 // Period: ~2^1600
-var sr = __webpack_require__(27);
+var sr = __webpack_require__(31);
 
 sr.alea = alea;
 sr.xor128 = xor128;
@@ -1108,7 +1112,7 @@ module.exports = sr;
 
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -1230,7 +1234,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 22 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -1319,7 +1323,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 23 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -1413,7 +1417,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 24 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -1518,7 +1522,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -1672,7 +1676,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -1783,7 +1787,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)(module)))
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -2025,7 +2029,7 @@ if ( true && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
   try {
-    nodecrypto = __webpack_require__(28);
+    nodecrypto = __webpack_require__(32);
   } catch (ex) {}
 } else if (true) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() { return seedrandom; }).call(exports, __webpack_require__, exports, module),
@@ -2040,13 +2044,13 @@ if ( true && module.exports) {
 
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2120,7 +2124,7 @@ exports.default = RNGFunction;
 //# sourceMappingURL=function.js.map
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2152,7 +2156,7 @@ exports.default = function (random, min, max) {
 //# sourceMappingURL=uniform.js.map
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2184,7 +2188,7 @@ exports.default = function (random, min, max) {
 //# sourceMappingURL=uniform-int.js.map
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2202,7 +2206,7 @@ exports.default = function (random) {
 //# sourceMappingURL=uniform-boolean.js.map
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2242,7 +2246,7 @@ exports.default = function (random) {
 //# sourceMappingURL=normal.js.map
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2266,7 +2270,7 @@ exports.default = function (random) {
 //# sourceMappingURL=log-normal.js.map
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2294,7 +2298,7 @@ exports.default = function (random) {
 //# sourceMappingURL=bernoulli.js.map
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2331,7 +2335,7 @@ exports.default = function (random) {
 //# sourceMappingURL=binomial.js.map
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2360,7 +2364,7 @@ exports.default = function (random) {
 //# sourceMappingURL=geometric.js.map
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2457,7 +2461,7 @@ exports.default = function (random) {
 //# sourceMappingURL=poisson.js.map
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2485,7 +2489,7 @@ exports.default = function (random) {
 //# sourceMappingURL=exponential.js.map
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2518,7 +2522,7 @@ exports.default = function (random) {
 //# sourceMappingURL=irwin-hall.js.map
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2547,7 +2551,7 @@ exports.default = function (random) {
 //# sourceMappingURL=bates.js.map
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2576,8 +2580,8 @@ exports.default = function (random) {
 //# sourceMappingURL=pareto.js.map
 
 /***/ }),
-/* 43 */,
-/* 44 */
+/* 47 */,
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
