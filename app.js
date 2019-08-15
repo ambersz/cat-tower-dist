@@ -973,6 +973,7 @@ var container = document.getElementById("container");
 container ? react_dom_default.a.render(react_default.a.createElement(display_Display, null), container) : false;
 
 if ('serviceWorker' in navigator) {
+  console.log("serviceworkers is a go!");
   navigator.serviceWorker.register('sw.js', {
     scope: ""
   }).then(function (registration) {
