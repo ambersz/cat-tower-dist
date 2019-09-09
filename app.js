@@ -1414,14 +1414,23 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-console.log('here try enabling persistent storage:');
+console.log('here try enabling persistent storage:'); // request push notification permission so chrome will allow persistent storage
 
-if (navigator.storage && navigator.storage.persist) {
-  navigator.storage.persist().then(function (granted) {
-    if (granted) {
-      console.log("Storage will not be cleared except by explicit user action");
+if (Notification.permission !== 'denied' || Notification.permission === "default") {
+  Notification.requestPermission(function (permission) {
+    // If the user accepts, let's create a notification
+    if (permission === "granted") {
+      if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then(function (granted) {
+          if (granted) {
+            console.log("Storage will not be cleared except by explicit user action");
+          } else {
+            console.log("Storage may be cleared by the UA under storage pressure.");
+          }
+        });
+      }
     } else {
-      console.log("Storage may be cleared by the UA under storage pressure.");
+      console.log('notification permission not granted so dont\'t request persistent storage, it wouldn\'t be granted');
     }
   });
 }
