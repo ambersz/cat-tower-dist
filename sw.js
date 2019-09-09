@@ -2665,6 +2665,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 
 
+ // TODO: support multiple activities. Unique DB store for each? 
+// Or change to key of activity name/id with state as value...?
+// Unique: least refactoring required I think... just change our state object to a kind of... states object and reference the correct store/state object when doing operations
+// activity- state format: Possibly changes in speed of get/set, not sure in which direction. 
+// Am now forced to get and set whole state at once, could lead to performance issues...
+// ...if we start syncing across devices and need to deal with 
 
 var state = {};
 var port2;
@@ -2682,13 +2688,13 @@ KEY_GOAL = 'TODAYS_GOAL'; // number
 
 var service_worker_keys = [KEY_INIT, KEY_MAX, KEY_CURRENT, KEY_UPDATED, KEY_RATE, KEY_GOAL];
 self.addEventListener('install', function (event) {
-  console.log('V1 installing…');
   getStateFromDB().then(function () {
     self.skipWaiting();
   }); // load state from IndexedDB for fast operations in serviceWorker
 });
 
 function getStateFromDB() {
+  // TODO: Check if and handle when indexeddb not available.
   return Promise.all([get(KEY_INIT).then(function (val) {
     return state.init = val;
   }), get(KEY_MAX).then(function (val) {
@@ -2855,14 +2861,14 @@ self.addEventListener("fetch", function (event) {
 /* expect client to send us messages when certain things happen
     changes:
     1: reporting not sore/sore/ sore but don't know why ({action: sore, val: 0/1/-1})
-    2: reporting new pushups done ({action: increment, val: delta})
+    2: reporting new action done ({action: increment, val: delta})
 
     getting info:
     1: on setup and when day changes, check whether need to request report on soreness, generate goal if needed
-    (has a new day started, and have there been any pushups recorded the previous day)
-    2: get current/goal pushups
+    (has a new day started, and have there been any actions recorded the previous day)
+    2: get current/goal actions
     ---
-    need to check if new day to reset counter. should not be able to increment pushups until soreness reported
+    need to check if new day to reset counter. should not be able to increment actions until soreness reported
     (can check new day on client side?)
 /*
 self.addEventListener("fetch", event => {

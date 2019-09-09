@@ -949,7 +949,7 @@ function (_Component) {
     key: "render",
     value: function render() {
       console.log(this.props);
-      return react_default.a.createElement("div", null, "Done ", this.props.current, " out of goal of ", this.props.goal, " pushups");
+      return react_default.a.createElement("div", null, "Done ", this.props.current, " out of goal of ", this.props.goal, " ", this.props.activity);
     }
   }]);
 
@@ -1016,13 +1016,13 @@ function (_Component) {
   CheckSuccess_createClass(Check, [{
     key: "render",
     value: function render() {
-      return react_default.a.createElement("div", null, "Are you sore from yesterday's batch?", react_default.a.createElement("button", {
+      return react_default.a.createElement("div", null, "Was the previous batch too difficult?", react_default.a.createElement("button", {
         onClick: this.reportFail
       }, " Yes "), react_default.a.createElement("button", {
         onClick: this.reportSuccess
       }, " No "), react_default.a.createElement("button", {
         onClick: this.reportUnknown
-      }, " Sore from other reasons "));
+      }, " Maybe "));
     }
   }]);
 
@@ -1411,6 +1411,18 @@ if ('serviceWorker' in navigator) {
     console.log('Registration successful, scope is:', registration.scope);
   })["catch"](function (error) {
     console.log('Service worker registration failed, error:', error);
+  });
+}
+
+console.log('here try enabling persistent storage:');
+
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().then(function (granted) {
+    if (granted) {
+      console.log("Storage will not be cleared except by explicit user action");
+    } else {
+      console.log("Storage may be cleared by the UA under storage pressure.");
+    }
   });
 }
 
