@@ -1333,7 +1333,7 @@ function (_Component) {
       chan.port1.onmessage = _this.updateState;
       _this.port = chan.port1; // TODO: change this and corresponding service worker routing to use action object
 
-      navigator.serviceWorker.controller.postMessage('setup', [chan.port2]);
+      _this.send('setup', [chan.port2]);
     });
 
     display_defineProperty(display_assertThisInitialized(_this), "updateState", function (e) {
@@ -1350,7 +1350,8 @@ function (_Component) {
         type: constants["a" /* default */].INCREMENT,
         delta: delta
       };
-      navigator.serviceWorker.controller.postMessage(action);
+
+      _this.send(action);
     });
 
     display_defineProperty(display_assertThisInitialized(_this), "report", function (status) {
@@ -1360,7 +1361,8 @@ function (_Component) {
         type: constants["a" /* default */].REPORT,
         status: status
       };
-      navigator.serviceWorker.controller.postMessage(action);
+
+      _this.send(action);
     });
 
     _this.state = {
@@ -1375,6 +1377,18 @@ function (_Component) {
   }
 
   display_createClass(Display, [{
+    key: "send",
+    value: function send() {
+      if (navigator.serviceWorker.controller && typeof navigator.serviceWorker.controller.postMessage === 'function') {
+        var _navigator$serviceWor;
+
+        (_navigator$serviceWor = navigator.serviceWorker.controller).postMessage.apply(_navigator$serviceWor, arguments);
+      } else {
+        console.log('reloading to let the service worker register');
+        location.reload();
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       return react_default.a.createElement(react_default.a.Fragment, null, debug && react_default.a.createElement(DebugTools_Tools, {

@@ -2729,9 +2729,15 @@ self.addEventListener('message', function (e) {
 
   if (action === constants["a" /* default */].SETUP) {
     console.log('setting up');
-    port2 = e.ports[0]; // if db hasn't been initialized before, init  with the following default values
+    port2 = e.ports[0];
+    initState();
+  }
+});
 
-    if (state.init !== true) {
+function initState() {
+  // if db hasn't been initialized before, init  with the following default values
+  get(KEY_INIT).then(function (initialized) {
+    if (initialized !== true) {
       state = {
         init: true,
         max: 1,
@@ -2740,11 +2746,12 @@ self.addEventListener('message', function (e) {
         rate: 0.1,
         goal: 1
       };
+      updateState();
+    } else {
+      getStateFromDB().then(updateState);
     }
-
-    updateState();
-  }
-});
+  });
+}
 
 function route(action) {
   switch (action.type) {
