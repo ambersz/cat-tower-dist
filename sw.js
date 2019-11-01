@@ -2679,8 +2679,8 @@ var typestate = {};
 var port2;
 var KEY_INIT = 'HAS_BEEN_INITIALIZED',
     // bool
-KEY_TYPES = 'STORED_TYPES_ARRAY'; // [string, ...]
-
+KEY_TYPES = 'STORED_TYPES_ARRAY',
+    // [string, ...]
 KEY_VERSION = 'SW_VERSION'; // string
 
 var service_worker_keys = [];
