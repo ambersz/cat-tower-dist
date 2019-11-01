@@ -2671,22 +2671,19 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 // activity- state format: Possibly changes in speed of get/set, not sure in which direction. 
 // Am now forced to get and set whole state at once, could lead to performance issues...
 // ...if we start syncing across devices and need to deal with 
+// TODO AZ re-init or transform data if minor? major? version changes
 
+var version = "0.2.0";
 var state = {};
+var typestate = {};
 var port2;
 var KEY_INIT = 'HAS_BEEN_INITIALIZED',
     // bool
-KEY_MAX = 'CONFIRMED_MAX',
-    // number
-KEY_CURRENT = 'POTENTIAL_MAX',
-    // number
-KEY_UPDATED = 'LAST_UPDATED',
-    // date
-KEY_RATE = 'INCREASE_RATE',
-    // number
-KEY_GOAL = 'TODAYS_GOAL'; // number
+KEY_TYPES = 'STORED_TYPES_ARRAY'; // [string, ...]
 
-var service_worker_keys = [KEY_INIT, KEY_MAX, KEY_CURRENT, KEY_UPDATED, KEY_RATE, KEY_GOAL];
+KEY_VERSION = 'SW_VERSION'; // string
+
+var service_worker_keys = [];
 self.addEventListener('install', function (event) {
   getStateFromDB().then(function () {
     self.skipWaiting();
@@ -2694,24 +2691,34 @@ self.addEventListener('install', function (event) {
 });
 
 function getStateFromDB() {
-  // TODO: Check if and handle when indexeddb not available.
-  return Promise.all([get(KEY_INIT).then(function (val) {
-    return state.init = val;
-  }), get(KEY_MAX).then(function (val) {
-    return state.max = val;
-  }), get(KEY_CURRENT).then(function (val) {
-    return state.current = val;
-  }), get(KEY_UPDATED).then(function (val) {
-    return state.updated = val;
-  }), get(KEY_RATE).then(function (val) {
-    return state.rate = val;
-  }), get(KEY_GOAL).then(function (val) {
-    return state.goal = val;
-  })]);
+  get(KEY_INIT).then(function (init) {
+    if (init) {
+      return get(KEY_TYPES).then(function (types) {
+        service_worker_keys = types;
+        var gets = [];
+
+        for (type in types) {
+          gets.push(get(key).then(function (val) {
+            return typestate[key];
+          }));
+        }
+
+        return Promise.all(gets);
+      });
+    } else {
+      return initState();
+    }
+  }); // TODO: Check if and handle when indexeddb not available.
 }
 
 function setDbFromState() {
-  return Promise.all([set(KEY_INIT, state.init), set(KEY_MAX, state.max), set(KEY_CURRENT, state.current), set(KEY_UPDATED, state.updated), set(KEY_RATE, state.rate), set(KEY_GOAL, state.goal)]);
+  var sets = [set(KEY_INIT, state.init), set(KEY_TYPES, state.types)];
+
+  for (key in service_worker_keys) {
+    sets.push(set(key, typestate[key]));
+  }
+
+  return Promise.all(sets);
 }
 
 self.addEventListener('message', function (e) {
@@ -2730,27 +2737,21 @@ self.addEventListener('message', function (e) {
   if (action === constants["a" /* default */].SETUP) {
     console.log('setting up');
     port2 = e.ports[0];
-    initState();
+    port2.postMessage(state);
   }
-});
+}); // TODO AZ: 
 
 function initState() {
   // if db hasn't been initialized before, init  with the following default values
-  get(KEY_INIT).then(function (initialized) {
-    if (initialized !== true) {
-      state = {
-        init: true,
-        max: 1,
-        current: 0,
-        updated: new Date(),
-        rate: 0.1,
-        goal: 1
-      };
-      updateState();
-    } else {
-      getStateFromDB().then(updateState);
-    }
-  });
+  state = {
+    init: true,
+    max: 1,
+    current: 0,
+    updated: new Date(),
+    rate: 0.1,
+    goal: 1
+  };
+  return updateState();
 }
 
 function route(action) {
@@ -2838,16 +2839,17 @@ function expectedGoal(max, rate) {
 }
 
 function updateState() {
-  if (typeof port2 === 'undefined') {
-    console.error('can\'t report back to client without a messagechannel');
-    return;
-  }
+  return new Promise(function (resolve, reject) {
+    if (typeof port2 === 'undefined') {
+      reject(new Error('can\'t report back to client without a messagechannel'));
+    }
 
-  console.log("I'm sending the state to the client!");
-  console.log(state);
-  port2.postMessage(state); // Now that client gets the important information, we can take our time updating the IndexedDB state
+    console.log("I'm sending the state to the client!");
+    console.log(state);
+    port2.postMessage(state); // Now that client gets the important information, we can take our time updating the IndexedDB state
 
-  setDbFromState();
+    resolve(setDbFromState());
+  });
 }
 
 self.addEventListener("fetch", function (event) {
