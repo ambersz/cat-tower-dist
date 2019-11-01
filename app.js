@@ -1387,7 +1387,8 @@ function (_Component) {
         console.log('reloading to let the service worker register'); // location.reload();
 
         console.log('I USUALLY TRY TO RELOAD HERE BUT I\'M NOT BECAUSE I\'M GOING CRAZY');
-      }
+      } // force redeploy
+
     }
   }, {
     key: "render",
