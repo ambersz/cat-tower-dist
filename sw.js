@@ -2687,7 +2687,7 @@ var service_worker_keys = [];
 self.addEventListener('install', function (event) {
   self.skipWaiting();
   getStateFromDB().then(function () {}); // load state from IndexedDB for fast operations in serviceWorker
-});
+}); // force redeploy
 
 function getStateFromDB() {
   get(KEY_INIT).then(function (init) {
