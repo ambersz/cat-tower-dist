@@ -2685,9 +2685,8 @@ KEY_VERSION = 'SW_VERSION'; // string
 
 var service_worker_keys = [];
 self.addEventListener('install', function (event) {
-  getStateFromDB().then(function () {
-    self.skipWaiting();
-  }); // load state from IndexedDB for fast operations in serviceWorker
+  self.skipWaiting();
+  getStateFromDB().then(function () {}); // load state from IndexedDB for fast operations in serviceWorker
 });
 
 function getStateFromDB() {
