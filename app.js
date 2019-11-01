@@ -1384,11 +1384,14 @@ function (_Component) {
 
         (_navigator$serviceWor = navigator.serviceWorker.controller).postMessage.apply(_navigator$serviceWor, arguments);
       } else {
-        console.log('reloading to let the service worker register'); // location.reload();
+        console.log('reloading to let the service worker register');
+        var a = 1;
+
+        if (a !== 1) {// location.reload();
+        }
 
         console.log('I USUALLY TRY TO RELOAD HERE BUT I\'M NOT BECAUSE I\'M GOING CRAZY');
-      } // force redeploy
-
+      }
     }
   }, {
     key: "render",
